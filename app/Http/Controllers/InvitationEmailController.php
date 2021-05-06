@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Invitation;
+use App\Mail\OfferMail;
+use Illuminate\Support\Facades\Mail;
+
 
 class InvitationEmailController extends Controller
 {
@@ -38,9 +41,16 @@ class InvitationEmailController extends Controller
     {
         $invitation = Invitation::create([
             'code' => Str::random(24),
-            'email' => $request -> input('email'),
+            'email' => $request->input('email'),
             'valid' => true,
         ]);
+
+
+        $offer = [
+            'code' => $invitation->code
+        ];
+
+        Mail::to($request->input('email'))->send(new OfferMail($offer));
 
         return $invitation;
 

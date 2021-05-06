@@ -52,13 +52,13 @@ class LoginController extends Controller
         if(auth()->attempt(array('user_name' => $input['user_name'], 'password' => $input['password'])))
         {
             if (auth()->user()->user_role == 'admin') {
-                return redirect()->route('admin.home');
+                return ($request->return == 'json') ? ["return"=>true,"user_role"=>"admin"] : redirect()->route('admin.home');
             }else{
-                return redirect()->route('home');
+                return ($request->return == 'json') ? ["return"=>true,"user_role"=>"user"] : redirect()->route('home');
             }
         }else{
-            return redirect()->route('login')
-                ->withErrors(['Username And Password Are Wrong.']);
+            $message = "Username And Password Are Wrong.";
+            return ($request->return == 'json') ? ["return"=>false,"message"=>$message] : redirect()->route('login')->withErrors([$message]);
         }
 
     }
