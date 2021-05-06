@@ -41,23 +41,14 @@ Route::get('/email/verify', function () {
     return view('auth.verify');
 })->middleware('auth')->name('verification.notice');
 
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
 
-    return redirect('/home');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-
-    return back()->with('message', 'Verification link sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.resend');
+Route::get('/email/verify/{id}/{code}', [UserController::class, 'emailVerificationRequest'])->name('verification.verify');
+Route::post('/email/verification-notification', [UserController::class, 'sendEmailVerificationNotification'])->name('verification.resend');
 
 
 
 // home
-Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('verified');;
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('verified');
 Route::get('admin/home', [HomeController::class, 'adminHome'])->name('admin.home')->middleware('is_admin');
 
 

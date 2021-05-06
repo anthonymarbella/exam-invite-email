@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserVerificationMail;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -103,4 +106,38 @@ class UserController extends Controller
     {
         //
     }
+
+
+    public function sendEmailVerificationNotification()
+    {
+        $loggedInUser_id=Auth::user()->id;
+
+        $content = [
+            'userId' => $loggedInUser_id,
+            'code' => rand (000000,999999)
+        ];
+
+        User::where('id', $loggedInUser_id)
+        ->update(['two_factor_code' => $content['code']]);
+
+        Mail::to(Auth::user()->email)->send(new UserVerificationMail($content));
+        return view('auth.verify')->with('message', 'Verification link sent!');
+    }
+
+
+    public function emailVerificationRequest ($id, $code)
+    {
+        if (User::where('id', $id)
+        ->where('two_factor_code', $code)
+        ->update(['email_verified_at' => DB::raw('CURRENT_TIMESTAMP')])  )
+        {
+            return redirect()->route('home');
+        }
+
+        return "Invalid verfication code.";
+
+
+    }
+
+
 }
