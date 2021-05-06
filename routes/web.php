@@ -23,7 +23,15 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
+
+Route::get('/logout', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return ["return"=>true];
+});
+
+
 
 
 
@@ -77,3 +85,12 @@ Route::get('/register/{code}', [InvitationEmailController::class, 'show']);
 
 // user
 Route::resource('/user', UserController::class);
+
+
+
+
+
+
+
+// Auth
+Auth::routes();
