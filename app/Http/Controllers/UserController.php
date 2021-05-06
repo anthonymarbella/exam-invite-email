@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,18 +73,23 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
 
-        // $request->request->remove('password');
 
-        $request->merge([
-            'password' => Hash::make($request->password)
-        ]);
-
-        if(User::where('id', $id)->update(request()->except(['registered_at','email_verified_at','email','user_role','created_at','updated_at'])))
+        if(Auth::id() == $id)
         {
-            return ["return"=>true];
-        }
 
-        return ["return"=>false];
+            $request->merge([
+                'password' => Hash::make($request->password)
+            ]);
+
+            if(User::where('id', $id)->update(request()->except(['registered_at','email_verified_at','email','user_role','created_at','updated_at'])))
+            {
+                return ["return"=>true];
+            }
+
+            return ["return"=>false];
+
+        }
+        return ["return"=>false,"message"=>"You are trying to update other user."];
 
     }
 
