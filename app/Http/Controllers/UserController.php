@@ -70,7 +70,7 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-            //return  $request->name;
+        $request()->password=Hash::make($request()->password)
         if(User::where('id', $id)->update(request()->except(['registered_at','email_verified_at','email','user_role','created_at','updated_at'])))
         {
             return ["return"=>true];
