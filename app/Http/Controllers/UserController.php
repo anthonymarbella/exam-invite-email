@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -70,7 +71,13 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request()->password=Hash::make($request()->password)
+
+        // $request->request->remove('password');
+
+        $request->merge([
+            'password' => Hash::make($request->password)
+        ]);
+
         if(User::where('id', $id)->update(request()->except(['registered_at','email_verified_at','email','user_role','created_at','updated_at'])))
         {
             return ["return"=>true];
