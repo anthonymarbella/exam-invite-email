@@ -7,7 +7,6 @@ namespace App\Http\Middleware;
 
 
 use Closure;
-use Symfony\Component\HttpFoundation\Response;
 
 
 
@@ -39,9 +38,10 @@ class IsAdmin
 
         }
 
-        $message = "You are not an Admin.";
-        $json = ["return"=>false,"message"=>$message];
-        return ($request->return == 'json') ? response(["return"=>false,"message"=>$message]) : redirect('home')->with('error',$message);
+
+
+        return redirect('home')->with('error',"You don't have admin access.");
+
     }
 
 }
