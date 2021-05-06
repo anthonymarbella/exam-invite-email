@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use \Doctrine\DBAL\Types\Type;
+//use \Doctrine\DBAL\Types\Type;
 
 class AltertablecolUsersEmailVerifiedAt extends Migration
 {
@@ -14,7 +14,7 @@ class AltertablecolUsersEmailVerifiedAt extends Migration
      */
     public function up()
     {
-        Type::addType('timestamp', 'MarkTopper\DoctrineDBALTimestampType\TimestampType');
+        //Type::addType('timestamp', 'MarkTopper\DoctrineDBALTimestampType\TimestampType');
         Schema::table('users', function (Blueprint $table) {
             $table->timestamp('email_verified_at')->nullable()->change();
         });
