@@ -108,8 +108,9 @@ class UserController extends Controller
     }
 
 
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(Request $request)
     {
+
         $loggedInUser_id=Auth::user()->id;
 
         $content = [
@@ -121,7 +122,9 @@ class UserController extends Controller
         ->update(['two_factor_code' => $content['code']]);
 
         Mail::to(Auth::user()->email)->send(new UserVerificationMail($content));
-        return view('auth.verify')->with('message', 'Verification link sent!');
+
+        $message='Verification link sent!';
+        return (is_null($request->_token)) ? ['return'=>true,'message'=>$message] : view('auth.verify')->with('message', $message);
     }
 
 
